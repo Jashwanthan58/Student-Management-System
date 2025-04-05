@@ -8,7 +8,9 @@ def load_students():
     if os.path.exists("students.txt"):
         with open("students.txt", "r") as file:
             for line in file:
-                students.append(line.strip().split(","))
+                data = line.strip().split(",")
+                if len(data) == 3:  # Ensure correct data format
+                    students.append(data)
     return students
 
 def save_students(students):
@@ -18,12 +20,15 @@ def save_students(students):
 
 def add_student():
     students = load_students()
-    name = input("Enter student name: ")
-    age = input("Enter student age: ")
-    grade = input("Enter student grade: ")
-    students.append([name, age, grade])
-    save_students(students)
-    print("Student added successfully!")
+    name = input("Enter student name: ").strip()
+    age = input("Enter student age: ").strip()
+    grade = input("Enter student grade: ").strip()
+    if name and age.isdigit() and grade:
+        students.append([name, age, grade])
+        save_students(students)
+        print("Student added successfully!")
+    else:
+        print("Invalid input. Please enter valid details.")
 
 def view_students():
     students = load_students()
@@ -38,19 +43,25 @@ def view_students():
 
 def update_student():
     students = load_students()
-    name = input("Enter student name to update: ")
+    name = input("Enter student name to update: ").strip()
     for student in students:
         if student[0] == name:
-            student[1] = input("Enter new age: ")
-            student[2] = input("Enter new grade: ")
-            save_students(students)
-            print("Student updated successfully!")
-            return
+            new_age = input("Enter new age: ").strip()
+            new_grade = input("Enter new grade: ").strip()
+            if new_age.isdigit() and new_grade:
+                student[1] = new_age
+                student[2] = new_grade
+                save_students(students)
+                print("Student updated successfully!")
+                return
+            else:
+                print("Invalid input. Update failed.")
+                return
     print("Student not found.")
 
 def delete_student():
     students = load_students()
-    name = input("Enter student name to delete: ")
+    name = input("Enter student name to delete: ").strip()
     for student in students:
         if student[0] == name:
             students.remove(student)
@@ -68,7 +79,7 @@ def main():
         print("3. Update Student")
         print("4. Delete Student")
         print("5. Exit")
-        choice = input("Enter choice: ")
+        choice = input("Enter choice: ").strip()
         if choice == "1":
             add_student()
         elif choice == "2":
